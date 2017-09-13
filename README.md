@@ -1,4 +1,4 @@
-# Spring框架下的REST服務
+# Spring框架下的REST服務(連同快取範例)
 
 * 使用Spring的RestController、JavaConfiguration做出一個簡單的REST服務
 * 增加Redis快取功能
