@@ -3,6 +3,7 @@ package com.eric.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import com.eric.model.EmployeModel;
@@ -27,7 +28,7 @@ public class EmployeDAO {
 	
 	/**
 	 * 取得所有的員工資料(不快取,當作對照)
-	 * @return
+	 * @return List
 	 */
 	public List<EmployeModel> getAll() throws Exception {
 		return employeStoreList;
@@ -39,7 +40,9 @@ public class EmployeDAO {
 	 * @return
 	 * @throws Exception
 	 */
+	@Cacheable("employe")
 	public EmployeModel getOne(Long id) throws Exception {
+		System.out.println("getOne from database.");
 		for (EmployeModel employe: employeStoreList) {
 			if (employe.getId().equals(id)) {
 				return employe;

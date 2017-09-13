@@ -1,12 +1,18 @@
 package com.eric.model;
 
+import java.io.Serializable;
+
 /**
  * 企業員工資料模型
  * @author yung.ho
  *
  */
-public class EmployeModel {
+public class EmployeModel implements Serializable {
 
+	/**
+	 * 自動產生序列號 
+	 */
+	private static final long serialVersionUID = 8633274819932809940L;
 	private Long id;			//員工編號
 	private String name;		//員工姓名
 	private String deptName;	//部門名稱
