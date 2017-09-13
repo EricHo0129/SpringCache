@@ -3,6 +3,8 @@ package com.eric.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -40,9 +42,9 @@ public class EmployeDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	@Cacheable("employe")
+	@Cacheable(value="employe",key="'employe:'+#id")
 	public EmployeModel getOne(Long id) throws Exception {
-		System.out.println("getOne from database.");
+		System.out.println("getOne from database. id="+id);
 		for (EmployeModel employe: employeStoreList) {
 			if (employe.getId().equals(id)) {
 				return employe;
@@ -57,12 +59,13 @@ public class EmployeDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean create(EmployeModel employe) throws Exception {
-		if (getOne(employe.getId()) != null) {
+	@Cacheable(value="employe",key="'employe:'+#employe.id")
+	public EmployeModel create(EmployeModel employe) throws Exception {
+		if (getOne(employe.getId()) == null) {
 			employeStoreList.add(employe);
-			return true;
+			return employe;
 		}
-		return false;
+		return null;
 	}
 	
 	/**
@@ -71,14 +74,15 @@ public class EmployeDAO {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean update(EmployeModel employe) throws Exception {
+	@CachePut(value="employe", key = "'employe:'+#employe.id")
+	public EmployeModel update(EmployeModel employe) throws Exception {
 		EmployeModel employeStore = getOne(employe.getId());
 		if ( employeStore!= null) {
 			if (delete(employe.getId())) {				
-				return create(employeStore);
+				return create(employe);
 			}
 		}
-		return false;
+		return null;
 	}
 	
 	/**
@@ -87,6 +91,7 @@ public class EmployeDAO {
 	 * @return
 	 * @throws Exception
 	 */
+	@CacheEvict(value = "employe", key = "'employe:'+#id")
 	public boolean delete(Long id) throws Exception {
 		EmployeModel employeStore = getOne(id);
 		if ( employeStore!= null) {
